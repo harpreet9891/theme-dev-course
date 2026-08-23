@@ -8,8 +8,11 @@
   </head>
   <body>
     <header>
-      <p>Welcome to shopify theme development.</p>
+      {% sections 'header-group' %}
     </header>
     <main>{{ content_for_layout }}</main>
+    <footer>
+      {% sections 'footer-group' %}
+    </footer>
   </body>
 </html>
