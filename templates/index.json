@@ -33,7 +33,7 @@
         "card_JpeHF6": {
           "type": "card",
           "settings": {
-            "title": "Card Title",
+            "title": "First Card",
             "description": "Add a short description here.",
             "link": ""
           }
@@ -41,7 +41,7 @@
         "card_z3mTy9": {
           "type": "card",
           "settings": {
-            "title": "Card Title",
+            "title": "Second Card",
             "description": "Add a short description here.",
             "link": ""
           }
@@ -49,7 +49,15 @@
         "card_tbwNRY": {
           "type": "card",
           "settings": {
-            "title": "Card Title",
+            "title": "Third Card",
+            "description": "Add a short description here.",
+            "link": ""
+          }
+        },
+        "card_EtcaWV": {
+          "type": "card",
+          "settings": {
+            "title": "Fourth Card",
             "description": "Add a short description here.",
             "link": ""
           }
@@ -58,7 +66,8 @@
       "block_order": [
         "card_JpeHF6",
         "card_z3mTy9",
-        "card_tbwNRY"
+        "card_tbwNRY",
+        "card_EtcaWV"
       ],
       "name": "Image Cards",
       "settings": {
