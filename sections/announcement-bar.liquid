@@ -1,1 +1,111 @@
-<p>This is the announcement bar</p>
+{% if section.settings.enable_announcement %}
+  <div class="announcement-bar">
+    <div class="announcement-marquee">
+      <div class="announcement-track">
+        {% for i in (1..6) %}
+          <div class="announcement-item">
+            {% if section.settings.link != blank %}
+              <a href="{{ section.settings.link }}">
+                {{ section.settings.text }}
+              </a>
+            {% else %}
+              <span>{{ section.settings.text }}</span>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+<style>
+  .announcement-bar {
+    width: 100%;
+    overflow: hidden;
+    background: #111;
+    color: #fff;
+  }
+
+  .announcement-marquee {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .announcement-track {
+    display: flex;
+    width: max-content;
+    animation: announcement-scroll 25s linear infinite;
+  }
+
+  .announcement-item {
+    flex-shrink: 0;
+    padding: 11px 40px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .announcement-item a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .announcement-item a:hover {
+    text-decoration: underline;
+  }
+
+  @keyframes announcement-scroll {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .announcement-bar:hover .announcement-track {
+    animation-play-state: paused;
+  }
+
+  @media screen and (max-width: 749px) {
+    .announcement-item {
+      padding: 10px 25px;
+      font-size: 12px;
+    }
+
+    .announcement-track {
+      animation-duration: 18s;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Announcement Bar",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_announcement",
+      "label": "Enable announcement bar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Announcement text",
+      "default": "Free shipping on orders over $50 • Shop our latest collection"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Announcement link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement Bar"
+    }
+  ]
+}
+{% endschema %}

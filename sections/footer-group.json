@@ -8,13 +8,15 @@
  * ------------------------------------------------------------
  */
 {
-    "name": "Footer group",
-    "type": "footer",
-    "sections": {
-        "main":{
-            "type": "footer",
-            "settings": {}
-        }
-    },
-    "order": ["main"]
+  "name": "Footer Group",
+  "type": "footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "settings": {}
+    }
+  },
+  "order": [
+    "footer"
+  ]
 }

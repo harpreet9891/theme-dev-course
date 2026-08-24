@@ -1,0 +1,134 @@
+<section class="newsletter-section">
+  <div class="newsletter-container page-width">
+    <div class="newsletter-content">
+      <h2>{{ section.settings.heading }}</h2>
+
+      {% if section.settings.text != blank %}
+        <p>{{ section.settings.text }}</p>
+      {% endif %}
+    </div>
+
+    {% form 'customer', class: 'newsletter-form' %}
+      <input
+        type="hidden"
+        name="contact[tags]"
+        value="newsletter"
+      >
+
+      <div class="newsletter-input-wrapper">
+        <input
+          type="email"
+          name="contact[email]"
+          placeholder="Enter your email"
+          required
+          autocomplete="email"
+        >
+
+        <button type="submit">Subscribe</button>
+      </div>
+
+      {% if form.posted_successfully? %}
+        <p class="newsletter-success">Thanks for subscribing!</p>
+      {% endif %}
+
+      {% if form.errors %}
+        <div class="newsletter-error">
+          {{ form.errors | default_errors }}
+        </div>
+      {% endif %}
+    {% endform %}
+  </div>
+</section>
+
+<style>
+  .newsletter-section {
+    padding: 70px 0px;
+    border-top: 1px solid #e5e5e5;
+  }
+
+  .newsletter-container {
+    text-align: center;
+  }
+
+  .newsletter-content h2 {
+    margin: 0 0 12px;
+    font-size: 34px;
+  }
+
+  .newsletter-content p {
+    margin: 0 0 30px;
+    color: #666;
+    line-height: 1.6;
+  }
+
+  .newsletter-input-wrapper {
+    display: flex;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .newsletter-input-wrapper input {
+    flex: 1;
+    min-width: 0;
+    padding: 15px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+  }
+
+  .newsletter-input-wrapper button {
+    padding: 15px 25px;
+    border: 0;
+    background: #111;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .newsletter-success {
+    margin-top: 15px;
+  }
+
+  .newsletter-error {
+    margin-top: 15px;
+  }
+
+  @media screen and (max-width: 767px) {
+    .newsletter-section {
+      padding: 50px 20px;
+    }
+
+    .newsletter-input-wrapper {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .newsletter-input-wrapper button {
+      width: 100%;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Stay in the Loop"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "Subscribe to receive updates, new arrivals and exclusive offers."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter"
+    }
+  ]
+}
+{% endschema %}

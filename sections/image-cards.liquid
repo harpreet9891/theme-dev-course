@@ -1,0 +1,235 @@
+<section class="image-cards-section">
+  <div class="image-cards-container page-width">
+    {% if section.settings.heading != blank %}
+      <div class="image-cards-header">
+        <h2>{{ section.settings.heading }}</h2>
+
+        {% if section.settings.description != blank %}
+          <p>{{ section.settings.description }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="image-cards-grid">
+      {% for block in section.blocks %}
+        <div class="image-card" {{ block.shopify_attributes }}>
+          {% if block.settings.image != blank %}
+            <a
+              href="{{ block.settings.link | default: '#' }}"
+              class="image-card-image"
+            >
+              {{
+                block.settings.image
+                | image_url: width: 800
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '400, 600, 800',
+                  sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw',
+                  alt: block.settings.title
+              }}
+            </a>
+          {% else %}
+            <div class="image-card-image image-card-placeholder">
+              {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+          {% endif %}
+
+          <div class="image-card-content">
+            {% if block.settings.title != blank %}
+              <h3>
+                {% if block.settings.link != blank %}
+                  <a href="{{ block.settings.link }}">
+                    {{ block.settings.title }}
+                  </a>
+                {% else %}
+                  {{ block.settings.title }}
+                {% endif %}
+              </h3>
+            {% endif %}
+
+            {% if block.settings.description != blank %}
+              <p>
+                {{ block.settings.description }}
+              </p>
+            {% endif %}
+
+            {% if block.settings.link != blank %}
+              <a
+                href="{{ block.settings.link }}"
+                class="image-card-link"
+              >
+                Explore
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .image-cards-section {
+    padding: 80px 40px;
+  }
+
+  .image-cards-header {
+    margin-bottom: 40px;
+  }
+
+  .image-cards-header h2 {
+    margin: 0 0 10px;
+    font-size: 36px;
+  }
+
+  .image-cards-header p {
+    margin: 0;
+    color: #666;
+    line-height: 1.6;
+  }
+
+  .image-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+  }
+
+  .image-card {
+    overflow: hidden;
+    background: #f5f5f5;
+  }
+
+  .image-card-image {
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+  }
+
+  .image-card-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .image-card:hover .image-card-image img {
+    transform: scale(1.04);
+  }
+
+  .image-card-content {
+    padding: 25px;
+  }
+
+  .image-card-content h3 {
+    margin: 0 0 10px;
+    font-size: 22px;
+  }
+
+  .image-card-content h3 a:hover {
+    text-decoration: underline;
+  }
+
+  .image-card-content p {
+    margin: 0 0 18px;
+    color: #666;
+    line-height: 1.6;
+  }
+
+  .image-card-link {
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: underline;
+  }
+
+  @media screen and (max-width: 989px) {
+    .image-cards-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    .image-cards-section {
+      padding: 50px 20px;
+    }
+
+    .image-cards-header h2 {
+      font-size: 28px;
+    }
+
+    .image-cards-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .image-card-content {
+      padding: 20px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Image Cards",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Explore Our Collection"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Discover something you'll love."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Card Title"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Add a short description here."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image Cards",
+      "blocks": [
+        {
+          "type": "card"
+        },
+        {
+          "type": "card"
+        },
+        {
+          "type": "card"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

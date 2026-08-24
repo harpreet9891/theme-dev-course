@@ -1,1 +1,157 @@
-<p>This is your footer section</p>
+<footer class="site-footer">
+  <div class="footer-container page-width">
+    <div class="footer-brand">
+      <h2>{{ shop.name }}</h2>
+
+      {% if section.settings.description != blank %}
+        <p>{{ section.settings.description }}</p>
+      {% endif %}
+    </div>
+
+    <div class="footer-menu">
+      <h3>{{ section.settings.menu_title }}</h3>
+
+      {% if section.settings.menu != blank %}
+        <ul>
+          {% for link in section.settings.menu.links %}
+            <li>
+              <a href="{{ link.url }}">
+                {{ link.title }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+
+    <div class="footer-contact">
+      <h3>Contact</h3>
+
+      {% if shop.email != blank %}
+        <p>{{ shop.email }}</p>
+      {% endif %}
+
+      {% if section.settings.contact_text != blank %}
+        <p>{{ section.settings.contact_text }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>
+      © {{ 'now' | date: '%Y' }}
+      {{ shop.name }}. All rights reserved.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding-top: 70px;
+    background: #111;
+    color: #fff;
+  }
+
+  .footer-container {
+    padding: 0 40px 60px;
+
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 60px;
+  }
+
+  .footer-brand h2,
+  .footer-menu h3,
+  .footer-contact h3 {
+    margin-top: 0;
+  }
+
+  .footer-brand h2 {
+    font-size: 24px;
+  }
+
+  .footer-brand p,
+  .footer-contact p {
+    max-width: 400px;
+    color: #aaa;
+    line-height: 1.6;
+  }
+
+  .footer-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .footer-menu li {
+    margin-bottom: 12px;
+  }
+
+  .footer-menu a {
+    color: #aaa;
+  }
+
+  .footer-menu a:hover {
+    color: #fff;
+  }
+
+  .footer-bottom {
+    padding: 20px 40px;
+    border-top: 1px solid #333;
+    text-align: center;
+  }
+
+  .footer-bottom p {
+    margin: 0;
+    color: #888;
+    font-size: 13px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .site-footer {
+      padding-top: 50px;
+    }
+
+    .footer-container {
+      padding: 0 20px 40px;
+      grid-template-columns: 1fr;
+      gap: 35px;
+    }
+
+    .footer-bottom {
+      padding: 20px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Quality products designed for modern living."
+    },
+    {
+      "type": "text",
+      "id": "menu_title",
+      "label": "Menu title",
+      "default": "Quick Links"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Footer menu",
+      "default": "footer"
+    },
+    {
+      "type": "text",
+      "id": "contact_text",
+      "label": "Contact text",
+      "default": "We are here to help."
+    }
+  ]
+}
+{% endschema %}

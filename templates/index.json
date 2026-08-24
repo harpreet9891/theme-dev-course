@@ -9,17 +9,75 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "header",
-      "settings": {}
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "heading": "Elevate Your Everyday Style",
+        "text": "<p>Discover our latest collection designed for modern living.</p>",
+        "button_label": "Shop Collection",
+        "button_link": ""
+      }
     },
-    "hero-banner": {
-      "type": "hero-banner",
-      "settings": {}
+    "promo_banner": {
+      "type": "promo-banner",
+      "settings": {
+        "heading": "New Season. New Style.",
+        "text": "Explore our latest collection and find your new favorites.",
+        "button_label": "Shop Now",
+        "button_link": ""
+      }
+    },
+    "image_cards_pjFWc6": {
+      "type": "image-cards",
+      "blocks": {
+        "card_JpeHF6": {
+          "type": "card",
+          "settings": {
+            "title": "Card Title",
+            "description": "Add a short description here.",
+            "link": ""
+          }
+        },
+        "card_z3mTy9": {
+          "type": "card",
+          "settings": {
+            "title": "Card Title",
+            "description": "Add a short description here.",
+            "link": ""
+          }
+        },
+        "card_tbwNRY": {
+          "type": "card",
+          "settings": {
+            "title": "Card Title",
+            "description": "Add a short description here.",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "card_JpeHF6",
+        "card_z3mTy9",
+        "card_tbwNRY"
+      ],
+      "name": "Image Cards",
+      "settings": {
+        "heading": "Explore Our Collection",
+        "description": "Discover something you'll love."
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "heading": "Stay in the Loop",
+        "text": "Subscribe to receive updates, new arrivals and exclusive offers."
+      }
     }
   },
   "order": [
-    "main",
-    "hero-banner"
+    "hero",
+    "promo_banner",
+    "image_cards_pjFWc6",
+    "newsletter"
   ]
 }
