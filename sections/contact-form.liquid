@@ -1,0 +1,323 @@
+<div class="contact-page">
+  <div class="contact-container">
+
+    <div class="contact-header">
+      <h1>{{ section.settings.heading }}</h1>
+
+      {% if section.settings.description != blank %}
+        <p>{{ section.settings.description }}</p>
+      {% endif %}
+    </div>
+
+    <div class="contact-content">
+
+      <!-- Contact Information -->
+      <div class="contact-info">
+
+        {% if section.settings.email != blank %}
+          <div class="contact-info-item">
+            <h3>Email</h3>
+            <a href="mailto:{{ section.settings.email }}">
+              {{ section.settings.email }}
+            </a>
+          </div>
+        {% endif %}
+
+        {% if section.settings.phone != blank %}
+          <div class="contact-info-item">
+            <h3>Phone</h3>
+            <a href="tel:{{ section.settings.phone }}">
+              {{ section.settings.phone }}
+            </a>
+          </div>
+        {% endif %}
+
+        {% if section.settings.address != blank %}
+          <div class="contact-info-item">
+            <h3>Address</h3>
+            <p>{{ section.settings.address }}</p>
+          </div>
+        {% endif %}
+
+      </div>
+
+      <!-- Contact Form -->
+      <div class="contact-form-wrapper">
+
+        {% form 'contact', class: 'contact-form' %}
+
+          {% if form.posted_successfully? %}
+            <div class="contact-success">
+              Thanks for contacting us. We'll get back to you soon.
+            </div>
+          {% endif %}
+
+          {{ form.errors | default_errors }}
+
+          <div class="contact-field">
+            <label for="ContactFormName">
+              Name
+            </label>
+
+            <input
+              type="text"
+              id="ContactFormName"
+              name="contact[name]"
+              value="{{ form.name }}"
+              placeholder="Your name"
+              required
+            >
+          </div>
+
+          <div class="contact-field">
+            <label for="ContactFormEmail">
+              Email
+            </label>
+
+            <input
+              type="email"
+              id="ContactFormEmail"
+              name="contact[email]"
+              value="{{ form.email }}"
+              placeholder="your@email.com"
+              required
+            >
+          </div>
+
+          <div class="contact-field">
+            <label for="ContactFormPhone">
+              Phone
+            </label>
+
+            <input
+              type="tel"
+              id="ContactFormPhone"
+              name="contact[phone]"
+              value="{{ form.phone }}"
+              placeholder="Your phone number"
+            >
+          </div>
+
+          <div class="contact-field">
+            <label for="ContactFormMessage">
+              Message
+            </label>
+
+            <textarea
+              id="ContactFormMessage"
+              name="contact[body]"
+              rows="6"
+              placeholder="Write your message..."
+              required
+            >{{ form.body }}</textarea>
+          </div>
+
+          <button type="submit" class="contact-submit">
+            {{ section.settings.button_text }}
+          </button>
+
+        {% endform %}
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+
+<style>
+  .contact-page {
+    padding: 80px 20px;
+  }
+
+  .contact-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .contact-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .contact-header h1 {
+    margin: 0 0 15px;
+    font-size: 42px;
+    line-height: 1.2;
+  }
+
+  .contact-header p {
+    max-width: 650px;
+    margin: 0 auto;
+    color: #666;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  .contact-content {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  .contact-info {
+    padding: 30px;
+    background: #f7f7f7;
+  }
+
+  .contact-info-item {
+    margin-bottom: 30px;
+  }
+
+  .contact-info-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .contact-info-item h3 {
+    margin: 0 0 8px;
+    font-size: 18px;
+  }
+
+  .contact-info-item p,
+  .contact-info-item a {
+    margin: 0;
+    color: #666;
+    line-height: 1.6;
+    text-decoration: none;
+  }
+
+  .contact-info-item a:hover {
+    text-decoration: underline;
+  }
+
+  .contact-form {
+    width: 100%;
+  }
+
+  .contact-field {
+    margin-bottom: 22px;
+  }
+
+  .contact-field label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .contact-field input,
+  .contact-field textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #d5d5d5;
+    border-radius: 4px;
+    background: #fff;
+    font: inherit;
+    box-sizing: border-box;
+  }
+
+  .contact-field textarea {
+    resize: vertical;
+  }
+
+  .contact-field input:focus,
+  .contact-field textarea:focus {
+    outline: none;
+    border-color: #111;
+  }
+
+  .contact-submit {
+    padding: 14px 30px;
+    border: 0;
+    background: #111;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    transition: opacity 0.2s ease;
+  }
+
+  .contact-submit:hover {
+    opacity: 0.85;
+  }
+
+  .contact-success {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  @media screen and (max-width: 749px) {
+    .contact-page {
+      padding: 50px 20px;
+    }
+
+    .contact-header {
+      margin-bottom: 40px;
+    }
+
+    .contact-header h1 {
+      font-size: 32px;
+    }
+
+    .contact-content {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .contact-info {
+      padding: 25px;
+    }
+  }
+</style>
+
+
+{% schema %}
+{
+  "name": "Contact Form",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Contact Us"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Have a question? We'd love to hear from you."
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email",
+      "default": "hello@example.com"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone",
+      "default": "+91 98765 432124"
+    },
+    {
+      "type": "textarea",
+      "id": "address",
+      "label": "Address",
+      "default": "India"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Send Message"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact Form"
+    }
+  ]
+}
+{% endschema %}
