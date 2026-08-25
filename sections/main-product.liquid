@@ -1,0 +1,1773 @@
+{% assign current_variant = product.selected_or_first_available_variant %}
+{% assign product_form_id = 'product-form-' | append: section.id %}
+
+<section class="main-product">
+  <div class="page-width">
+
+    <div class="product-layout">
+
+      <!-- ========================================
+           PRODUCT MEDIA
+      ======================================== -->
+
+      <div class="product-media">
+
+        {% if product.images.size > 0 %}
+
+          <div class="product-gallery">
+
+            <!-- Main Image -->
+
+            <div
+              class="product-main-image"
+              data-product-main-image
+            >
+              {% if product.featured_image != blank %}
+                {{
+                  product.featured_image
+                  | image_url: width: 1200
+                  | image_tag:
+                    loading: 'eager',
+                    widths: '600, 800, 1000, 1200',
+                    sizes: '(min-width: 990px) 55vw, 100vw',
+                    alt: product.featured_image.alt
+                }}
+              {% endif %}
+            </div>
+
+
+            <!-- Thumbnails -->
+
+            {% if product.images.size > 1 %}
+
+              <div
+                class="product-thumbnails"
+                aria-label="Product images"
+              >
+
+                {% for image in product.images %}
+
+                  <button
+                    type="button"
+                    class="product-thumbnail {% if image.id == product.featured_image.id %}is-active{% endif %}"
+                    data-image-id="{{ image.id }}"
+                    data-image-url="{{ image | image_url: width: 1200 }}"
+                    data-image-alt="{{ image.alt | escape }}"
+                    aria-label="View product image {{ forloop.index }}"
+                  >
+                    {{
+                      image
+                      | image_url: width: 200
+                      | image_tag:
+                        loading: 'lazy',
+                        widths: '100, 150, 200',
+                        sizes: '80px',
+                        alt: image.alt
+                    }}
+                  </button>
+
+                {% endfor %}
+
+              </div>
+
+            {% endif %}
+
+          </div>
+
+        {% else %}
+
+          <div class="product-image-placeholder">
+            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          </div>
+
+        {% endif %}
+
+      </div>
+
+
+      <!-- ========================================
+           PRODUCT INFORMATION
+      ======================================== -->
+
+      <div class="product-information">
+
+        <!-- Vendor -->
+
+        {% if section.settings.show_vendor and product.vendor != blank %}
+
+          <div class="product-vendor">
+            {{ product.vendor }}
+          </div>
+
+        {% endif %}
+
+
+        <!-- Title -->
+
+        <h1 class="product-title">
+          {{ product.title }}
+        </h1>
+
+
+        <!-- Price -->
+
+        <div
+          class="product-price-wrapper"
+          data-product-price
+        >
+
+          {% if current_variant.compare_at_price > current_variant.price %}
+
+            <span class="product-price">
+              {{ current_variant.price | money }}
+            </span>
+
+            <span class="product-compare-price">
+              {{ current_variant.compare_at_price | money }}
+            </span>
+
+            <span class="product-sale-badge">
+              Sale
+            </span>
+
+          {% else %}
+
+            <span class="product-price">
+              {{ current_variant.price | money }}
+            </span>
+
+          {% endif %}
+
+        </div>
+
+
+        <!-- ========================================
+             PRODUCT FORM
+        ======================================== -->
+
+        {% form 'product',
+          product,
+          id: product_form_id,
+          class: 'product-form'
+        %}
+
+
+          <!-- Variant Options -->
+
+          {% unless product.has_only_default_variant %}
+
+            <div class="product-variants">
+
+              {% for option in product.options_with_values %}
+
+                <div class="product-option">
+
+                  <label
+                    class="product-option-label"
+                    for="Option-{{ section.id }}-{{ forloop.index0 }}"
+                  >
+                    {{ option.name }}
+                  </label>
+
+                  <select
+                    id="Option-{{ section.id }}-{{ forloop.index0 }}"
+                    class="product-option-select"
+                    data-option-index="{{ forloop.index0 }}"
+                  >
+
+                    {% for value in option.values %}
+
+                      <option
+                        value="{{ value | escape }}"
+                        {% if option.selected_value == value %}
+                          selected
+                        {% endif %}
+                      >
+                        {{ value }}
+                      </option>
+
+                    {% endfor %}
+
+                  </select>
+
+                </div>
+
+              {% endfor %}
+
+            </div>
+
+          {% endunless %}
+
+
+          <!-- Variant ID -->
+
+          <input
+            type="hidden"
+            name="id"
+            value="{{ current_variant.id }}"
+            data-variant-id
+          >
+
+
+          <!-- Quantity -->
+
+          <div class="product-quantity">
+
+            <label
+              class="product-option-label"
+              for="Quantity-{{ section.id }}"
+            >
+              Quantity
+            </label>
+
+            <div class="quantity-selector">
+
+              <button
+                type="button"
+                class="quantity-button"
+                data-quantity-minus
+                aria-label="Decrease quantity"
+              >
+                −
+              </button>
+
+              <input
+                id="Quantity-{{ section.id }}"
+                class="quantity-input"
+                type="number"
+                name="quantity"
+                value="1"
+                min="1"
+                inputmode="numeric"
+                data-quantity-input
+              >
+
+              <button
+                type="button"
+                class="quantity-button"
+                data-quantity-plus
+                aria-label="Increase quantity"
+              >
+                +
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <!-- Product Actions -->
+
+          <div class="product-actions">
+
+            <button
+              type="submit"
+              name="add"
+              class="product-add-button"
+              data-add-to-cart
+              {% unless current_variant.available %}
+                disabled
+              {% endunless %}
+            >
+
+              {% if current_variant.available %}
+                Add to Cart
+              {% else %}
+                Sold Out
+              {% endif %}
+
+            </button>
+
+
+            {% if section.settings.show_dynamic_checkout %}
+
+              {{ form | payment_button }}
+
+            {% endif %}
+
+          </div>
+
+        {% endform %}
+
+
+        <!-- ========================================
+             DESCRIPTION
+        ======================================== -->
+
+        {% if product.description != blank %}
+
+          <div class="product-accordion">
+
+            <details open>
+
+              <summary>
+                Description
+              </summary>
+
+              <div class="product-accordion-content">
+                {{ product.description }}
+              </div>
+
+            </details>
+
+          </div>
+
+        {% endif %}
+
+
+        <!-- ========================================
+             CARE INSTRUCTIONS
+        ======================================== -->
+
+        {% assign care_instructions =
+          product.metafields.custom.care_instructions
+        %}
+
+        {% if care_instructions != blank %}
+
+          <div class="product-accordion">
+
+            <details>
+
+              <summary>
+                Care Instructions
+              </summary>
+
+              <div class="product-accordion-content">
+                {{ care_instructions | metafield_tag }}
+              </div>
+
+            </details>
+
+          </div>
+
+        {% endif %}
+
+
+        <!-- ========================================
+             PRODUCT DETAILS
+        ======================================== -->
+
+        <div class="product-accordion">
+
+          <details>
+
+            <summary>
+              Product Details
+            </summary>
+
+            <div class="product-accordion-content">
+
+              {% if product.vendor != blank %}
+
+                <p>
+                  <strong>Vendor:</strong>
+                  {{ product.vendor }}
+                </p>
+
+              {% endif %}
+
+
+              {% if product.type != blank %}
+
+                <p>
+                  <strong>Product Type:</strong>
+                  {{ product.type }}
+                </p>
+
+              {% endif %}
+
+
+              {% if product.tags.size > 0 %}
+
+                <p>
+                  <strong>Tags:</strong>
+                  {{ product.tags | join: ', ' }}
+                </p>
+
+              {% endif %}
+
+            </div>
+
+          </details>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ========================================
+       MOBILE STICKY ADD TO CART
+  ======================================== -->
+
+  {% if section.settings.enable_sticky_atc %}
+
+    <div class="product-sticky-atc">
+
+      <div class="product-sticky-info">
+
+        <span class="product-sticky-title">
+          {{ product.title }}
+        </span>
+
+        <span
+          class="product-sticky-price"
+          data-sticky-price
+        >
+          {{ current_variant.price | money }}
+        </span>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="product-sticky-button"
+        data-sticky-atc
+        {% unless current_variant.available %}
+          disabled
+        {% endunless %}
+      >
+
+        {% if current_variant.available %}
+          Add to Cart
+        {% else %}
+          Sold Out
+        {% endif %}
+
+      </button>
+
+    </div>
+
+  {% endif %}
+
+</section>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  /* ========================================
+     PRODUCT DATA
+  ======================================== */
+
+  const productData = {{ product | json }};
+
+
+  /* ========================================
+     FORM
+  ======================================== */
+
+  const form = document.getElementById(
+    '{{ product_form_id }}'
+  );
+
+  if (!form) {
+    return;
+  }
+
+
+  /* ========================================
+     ELEMENTS
+  ======================================== */
+
+  const variantInput =
+    form.querySelector('[data-variant-id]');
+
+  const addButton =
+    form.querySelector('[data-add-to-cart]');
+
+  const optionSelects =
+    form.querySelectorAll('[data-option-index]');
+
+  const quantityInput =
+    form.querySelector('[data-quantity-input]');
+
+  const minusButton =
+    form.querySelector('[data-quantity-minus]');
+
+  const plusButton =
+    form.querySelector('[data-quantity-plus]');
+
+  const priceWrapper =
+    document.querySelector('[data-product-price]');
+
+  const stickyButton =
+    document.querySelector('[data-sticky-atc]');
+
+  const stickyPrice =
+    document.querySelector('[data-sticky-price]');
+
+  const stickyAtc =
+    document.querySelector('.product-sticky-atc');
+
+  const mainImage =
+    document.querySelector(
+      '[data-product-main-image] img'
+    );
+
+  const thumbnails =
+    document.querySelectorAll(
+      '.product-thumbnail'
+    );
+
+
+  /* ========================================
+     MONEY FORMAT
+  ======================================== */
+
+  function formatMoney(cents) {
+
+    return new Intl.NumberFormat(
+      '{{ localization.language.iso_code }}',
+      {
+        style: 'currency',
+        currency: '{{ cart.currency.iso_code }}'
+      }
+    ).format(cents / 100);
+
+  }
+
+
+  /* ========================================
+     FIND SELECTED VARIANT
+  ======================================== */
+
+  function getSelectedVariant() {
+
+    if (!optionSelects.length) {
+      return productData.variants[0];
+    }
+
+
+    const selectedOptions = [];
+
+    optionSelects.forEach(function (select) {
+
+      selectedOptions.push(
+        select.value
+      );
+
+    });
+
+
+    return productData.variants.find(
+      function (variant) {
+
+        return variant.options.every(
+          function (option, index) {
+
+            return option ===
+              selectedOptions[index];
+
+          }
+        );
+
+      }
+    );
+
+  }
+
+
+  /* ========================================
+     UPDATE PRICE
+  ======================================== */
+
+  function updatePrice(variant) {
+
+    if (!priceWrapper || !variant) {
+      return;
+    }
+
+
+    let html = '';
+
+
+    if (
+      variant.compare_at_price &&
+      variant.compare_at_price > variant.price
+    ) {
+
+      html = `
+        <span class="product-price">
+          ${formatMoney(variant.price)}
+        </span>
+
+        <span class="product-compare-price">
+          ${formatMoney(variant.compare_at_price)}
+        </span>
+
+        <span class="product-sale-badge">
+          Sale
+        </span>
+      `;
+
+    } else {
+
+      html = `
+        <span class="product-price">
+          ${formatMoney(variant.price)}
+        </span>
+      `;
+
+    }
+
+
+    priceWrapper.innerHTML = html;
+
+  }
+
+
+  /* ========================================
+     UPDATE BUTTONS
+  ======================================== */
+
+  function updateButtons(variant) {
+
+    if (!variant) {
+
+      if (addButton) {
+
+        addButton.disabled = true;
+        addButton.textContent = 'Unavailable';
+
+      }
+
+
+      if (stickyButton) {
+
+        stickyButton.disabled = true;
+        stickyButton.textContent = 'Unavailable';
+
+      }
+
+      return;
+    }
+
+
+    if (variant.available) {
+
+      if (addButton) {
+
+        addButton.disabled = false;
+        addButton.textContent = 'Add to Cart';
+
+      }
+
+
+      if (stickyButton) {
+
+        stickyButton.disabled = false;
+        stickyButton.textContent = 'Add to Cart';
+
+      }
+
+    } else {
+
+      if (addButton) {
+
+        addButton.disabled = true;
+        addButton.textContent = 'Sold Out';
+
+      }
+
+
+      if (stickyButton) {
+
+        stickyButton.disabled = true;
+        stickyButton.textContent = 'Sold Out';
+
+      }
+
+    }
+
+  }
+
+
+  /* ========================================
+     UPDATE MAIN IMAGE
+  ======================================== */
+
+  function setMainImage(
+    imageUrl,
+    imageAlt
+  ) {
+
+    if (!mainImage || !imageUrl) {
+      return;
+    }
+
+
+    mainImage.src = imageUrl;
+
+    mainImage.removeAttribute('srcset');
+
+    mainImage.removeAttribute('sizes');
+
+    mainImage.alt = imageAlt || '';
+
+  }
+
+
+  /* ========================================
+     SET ACTIVE THUMBNAIL
+  ======================================== */
+
+  function setActiveThumbnail(
+    imageId
+  ) {
+
+    thumbnails.forEach(
+      function (thumbnail) {
+
+        thumbnail.classList.remove(
+          'is-active'
+        );
+
+      }
+    );
+
+
+    if (!imageId) {
+      return;
+    }
+
+
+    const activeThumbnail =
+      document.querySelector(
+        '[data-image-id="' +
+        imageId +
+        '"]'
+      );
+
+
+    if (activeThumbnail) {
+
+      activeThumbnail.classList.add(
+        'is-active'
+      );
+
+    }
+
+  }
+
+
+  /* ========================================
+     UPDATE VARIANT IMAGE
+  ======================================== */
+
+  function updateVariantImage(variant) {
+
+    if (
+      !variant ||
+      !variant.featured_image
+    ) {
+      return;
+    }
+
+
+    const imageId =
+      String(
+        variant.featured_image.id
+      );
+
+
+    const thumbnail =
+      document.querySelector(
+        '[data-image-id="' +
+        imageId +
+        '"]'
+      );
+
+
+    if (thumbnail) {
+
+      const imageUrl =
+        thumbnail.dataset.imageUrl;
+
+      const imageAlt =
+        thumbnail.dataset.imageAlt || '';
+
+
+      setMainImage(
+        imageUrl,
+        imageAlt
+      );
+
+
+      setActiveThumbnail(
+        imageId
+      );
+
+      return;
+
+    }
+
+
+    /* Fallback if thumbnail not found */
+
+    if (variant.featured_image.src) {
+
+      setMainImage(
+        variant.featured_image.src,
+        variant.featured_image.alt || ''
+      );
+
+    }
+
+  }
+
+
+  /* ========================================
+     UPDATE VARIANT
+  ======================================== */
+
+  function updateVariant() {
+
+    const variant =
+      getSelectedVariant();
+
+
+    if (!variant) {
+
+      updateButtons(null);
+
+      return;
+
+    }
+
+
+    /* Variant ID */
+
+    if (variantInput) {
+
+      variantInput.value =
+        variant.id;
+
+    }
+
+
+    /* Price */
+
+    updatePrice(
+      variant
+    );
+
+
+    /* Availability */
+
+    updateButtons(
+      variant
+    );
+
+
+    /* Image */
+
+    updateVariantImage(
+      variant
+    );
+
+
+    /* Sticky Price */
+
+    if (stickyPrice) {
+
+      stickyPrice.textContent =
+        formatMoney(
+          variant.price
+        );
+
+    }
+
+  }
+
+
+  /* ========================================
+     VARIANT CHANGE
+  ======================================== */
+
+  optionSelects.forEach(
+    function (select) {
+
+      select.addEventListener(
+        'change',
+        updateVariant
+      );
+
+    }
+  );
+
+
+  /* ========================================
+     QUANTITY -
+  ======================================== */
+
+  if (minusButton) {
+
+    minusButton.addEventListener(
+      'click',
+      function () {
+
+        let quantity =
+          parseInt(
+            quantityInput.value,
+            10
+          ) || 1;
+
+
+        quantity =
+          Math.max(
+            1,
+            quantity - 1
+          );
+
+
+        quantityInput.value =
+          quantity;
+
+      }
+    );
+
+  }
+
+
+  /* ========================================
+     QUANTITY +
+  ======================================== */
+
+  if (plusButton) {
+
+    plusButton.addEventListener(
+      'click',
+      function () {
+
+        let quantity =
+          parseInt(
+            quantityInput.value,
+            10
+          ) || 1;
+
+
+        quantity++;
+
+
+        quantityInput.value =
+          quantity;
+
+      }
+    );
+
+  }
+
+
+  /* ========================================
+     QUANTITY VALIDATION
+  ======================================== */
+
+  if (quantityInput) {
+
+    quantityInput.addEventListener(
+      'change',
+      function () {
+
+        let quantity =
+          parseInt(
+            quantityInput.value,
+            10
+          ) || 1;
+
+
+        if (quantity < 1) {
+
+          quantity = 1;
+
+        }
+
+
+        quantityInput.value =
+          quantity;
+
+      }
+    );
+
+  }
+
+
+  /* ========================================
+     THUMBNAIL CLICK
+  ======================================== */
+
+  thumbnails.forEach(
+    function (thumbnail) {
+
+      thumbnail.addEventListener(
+        'click',
+        function () {
+
+          const imageUrl =
+            thumbnail.dataset.imageUrl;
+
+          const imageAlt =
+            thumbnail.dataset.imageAlt || '';
+
+          const imageId =
+            thumbnail.dataset.imageId;
+
+
+          if (!imageUrl || !mainImage) {
+            return;
+          }
+
+
+          setMainImage(
+            imageUrl,
+            imageAlt
+          );
+
+
+          setActiveThumbnail(
+            imageId
+          );
+
+        }
+      );
+
+    }
+  );
+
+
+  /* ========================================
+     STICKY ADD TO CART
+  ======================================== */
+
+  if (stickyButton) {
+
+    stickyButton.addEventListener(
+      'click',
+      function () {
+
+        if (
+          addButton &&
+          !addButton.disabled
+        ) {
+
+          addButton.click();
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /* ========================================
+     STICKY VISIBILITY
+     
+     Show sticky ATC only when the
+     original Add to Cart button is
+     outside the viewport.
+  ======================================== */
+
+  if (
+    stickyAtc &&
+    addButton &&
+    window.innerWidth <= 749
+  ) {
+
+    const stickyObserver =
+      new IntersectionObserver(
+        function (entries) {
+
+          entries.forEach(
+            function (entry) {
+
+              if (entry.isIntersecting) {
+
+                /* Original ATC is visible */
+
+                stickyAtc.classList.remove(
+                  'is-visible'
+                );
+
+              } else {
+
+                /* Original ATC is outside viewport */
+
+                stickyAtc.classList.add(
+                  'is-visible'
+                );
+
+              }
+
+            }
+          );
+
+        },
+        {
+          threshold: 0.1
+        }
+      );
+
+
+    stickyObserver.observe(addButton);
+
+
+    /* Handle screen resize */
+
+    window.addEventListener(
+      'resize',
+      function () {
+
+        if (window.innerWidth > 749) {
+
+          stickyAtc.classList.remove(
+            'is-visible'
+          );
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /* ========================================
+     INITIAL VARIANT
+  ======================================== */
+
+  updateVariant();
+
+});
+</script>
+
+
+<style>
+
+/* ========================================
+   MAIN PRODUCT
+======================================== */
+
+.main-product {
+  padding: 70px 0;
+}
+
+
+/* ========================================
+   PRODUCT LAYOUT
+======================================== */
+
+.product-layout {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.15fr)
+    minmax(360px, 0.85fr);
+
+  gap: 70px;
+
+  align-items: start;
+}
+
+
+/* ========================================
+   PRODUCT GALLERY
+======================================== */
+
+.product-gallery {
+  position: sticky;
+
+  top: 30px;
+}
+
+.product-main-image {
+  overflow: hidden;
+
+  width: 100%;
+
+  background: #f5f5f5;
+}
+
+.product-main-image img {
+  display: block;
+
+  width: 100%;
+  height: auto;
+}
+
+.product-thumbnails {
+  display: grid;
+
+  grid-template-columns:
+    repeat(5, 1fr);
+
+  gap: 10px;
+
+  margin-top: 12px;
+}
+
+.product-thumbnail {
+  position: relative;
+
+  z-index: 2;
+
+  display: block;
+
+  padding: 0;
+
+  border: 1px solid transparent;
+
+  background: #f5f5f5;
+
+  cursor: pointer;
+
+  appearance: none;
+}
+
+.product-thumbnail:hover {
+  border-color: #999;
+}
+
+.product-thumbnail.is-active {
+  border-color: #111;
+}
+
+.product-thumbnail img {
+  display: block;
+
+  width: 100%;
+
+  aspect-ratio: 1 / 1;
+
+  object-fit: cover;
+
+  pointer-events: none;
+}
+
+.product-image-placeholder {
+  background: #f5f5f5;
+}
+
+
+/* ========================================
+   PRODUCT INFORMATION
+======================================== */
+
+.product-information {
+  min-width: 0;
+}
+
+.product-vendor {
+  margin-bottom: 12px;
+
+  color: #777;
+
+  font-size: 13px;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.08em;
+}
+
+.product-title {
+  margin: 0 0 18px;
+
+  color: #111;
+
+  font-size: 38px;
+
+  line-height: 1.2;
+}
+
+
+/* ========================================
+   PRICE
+======================================== */
+
+.product-price-wrapper {
+  display: flex;
+
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 10px;
+
+  margin-bottom: 30px;
+}
+
+.product-price {
+  font-size: 22px;
+
+  font-weight: 600;
+}
+
+.product-compare-price {
+  color: #888;
+
+  font-size: 17px;
+
+  text-decoration: line-through;
+}
+
+.product-sale-badge {
+  padding: 5px 8px;
+
+  background: #111;
+
+  color: #fff;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  text-transform: uppercase;
+}
+
+
+/* ========================================
+   VARIANTS
+======================================== */
+
+.product-form {
+  margin: 0;
+}
+
+.product-variants {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+
+  margin-bottom: 25px;
+}
+
+.product-option {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.product-option-label {
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+.product-option-select {
+  width: 100%;
+
+  padding: 13px 40px 13px 13px;
+
+  border: 1px solid #ccc;
+
+  background: #fff;
+
+  color: #111;
+
+  font-size: 14px;
+
+  cursor: pointer;
+}
+
+.product-option-select:focus {
+  outline: none;
+
+  border-color: #111;
+}
+
+
+/* ========================================
+   QUANTITY
+======================================== */
+
+.product-quantity {
+  margin-bottom: 20px;
+}
+
+.quantity-selector {
+  display: flex;
+
+  width: 140px;
+
+  margin-top: 8px;
+
+  border: 1px solid #ccc;
+}
+
+.quantity-button {
+  width: 40px;
+
+  border: 0;
+
+  background: #fff;
+
+  font-size: 20px;
+
+  cursor: pointer;
+}
+
+.quantity-button:hover {
+  background: #f5f5f5;
+}
+
+.quantity-input {
+  width: 60px;
+
+  padding: 10px 5px;
+
+  border: 0;
+
+  text-align: center;
+
+  font-size: 14px;
+
+  appearance: textfield;
+}
+
+.quantity-input::-webkit-inner-spin-button,
+.quantity-input::-webkit-outer-spin-button {
+  margin: 0;
+
+  appearance: none;
+}
+
+.quantity-input:focus {
+  outline: none;
+}
+
+
+/* ========================================
+   PRODUCT ACTIONS
+======================================== */
+
+.product-actions {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+
+  margin-bottom: 35px;
+}
+
+.product-add-button {
+  width: 100%;
+
+  padding: 15px 20px;
+
+  border: 1px solid #111;
+
+  background: #111;
+
+  color: #fff;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.product-add-button:hover:not(:disabled) {
+  background: #333;
+}
+
+.product-add-button:disabled {
+  opacity: 0.5;
+
+  cursor: not-allowed;
+}
+
+
+/* ========================================
+   ACCORDION
+======================================== */
+
+.product-accordion {
+  border-top: 1px solid #ddd;
+}
+
+.product-accordion:last-child {
+  border-bottom: 1px solid #ddd;
+}
+
+.product-accordion summary {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 18px 0;
+
+  color: #111;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  list-style: none;
+}
+
+.product-accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+.product-accordion summary::after {
+  content: '+';
+
+  font-size: 20px;
+
+  font-weight: 400;
+}
+
+.product-accordion details[open]
+summary::after {
+  content: '−';
+}
+
+.product-accordion-content {
+  padding: 0 0 20px;
+
+  color: #555;
+
+  font-size: 14px;
+
+  line-height: 1.7;
+}
+
+.product-accordion-content p {
+  margin: 0 0 8px;
+}
+
+
+/* ========================================
+   STICKY ATC
+======================================== */
+
+.product-sticky-atc {
+  display: none;
+}
+
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media screen and (max-width: 989px) {
+
+  .main-product {
+    padding: 55px 0;
+  }
+
+  .product-layout {
+    grid-template-columns: 1fr 1fr;
+
+    gap: 40px;
+  }
+
+  .product-title {
+    font-size: 32px;
+  }
+
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media screen and (max-width: 749px) {
+
+  .main-product {
+    padding: 35px 20px 100px;
+  }
+
+  .product-layout {
+    display: block;
+  }
+
+  .product-gallery {
+    position: static;
+
+    margin-bottom: 35px;
+  }
+
+  .product-thumbnails {
+    grid-template-columns:
+      repeat(4, 1fr);
+
+    gap: 8px;
+  }
+
+  .product-title {
+    font-size: 28px;
+  }
+
+  .product-price {
+    font-size: 20px;
+  }
+
+
+  /* ========================================
+     MOBILE STICKY ATC
+  ======================================== */
+
+  .product-sticky-atc {
+    position: fixed;
+
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    z-index: 900;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 12px 15px;
+
+    border-top: 1px solid #ddd;
+
+    background: #fff;
+
+    box-shadow:
+      0 -5px 20px rgba(0, 0, 0, 0.08);
+
+    transform: translateY(100%);
+
+    visibility: hidden;
+
+    opacity: 0;
+
+    transition:
+      transform 0.25s ease,
+      opacity 0.25s ease,
+      visibility 0.25s ease;
+  }
+
+
+  /* Sticky becomes visible only
+     when original ATC is outside viewport */
+
+  .product-sticky-atc.is-visible {
+    transform: translateY(0);
+
+    visibility: visible;
+
+    opacity: 1;
+  }
+
+
+  .product-sticky-info {
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1;
+
+    min-width: 0;
+  }
+
+  .product-sticky-title {
+    overflow: hidden;
+
+    color: #111;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+  }
+
+  .product-sticky-price {
+    margin-top: 3px;
+
+    color: #666;
+
+    font-size: 13px;
+  }
+
+  .product-sticky-button {
+    flex-shrink: 0;
+
+    padding: 12px 18px;
+
+    border: 1px solid #111;
+
+    background: #111;
+
+    color: #fff;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+  }
+
+  .product-sticky-button:disabled {
+    opacity: 0.5;
+
+    cursor: not-allowed;
+  }
+
+}
+
+
+</style>
+
+
+{% schema %}
+{
+  "name": "Main Product",
+
+  "settings": [
+
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": true
+    },
+
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout",
+      "label": "Show dynamic checkout button",
+      "default": true
+    },
+
+    {
+      "type": "checkbox",
+      "id": "enable_sticky_atc",
+      "label": "Enable mobile sticky Add to Cart",
+      "default": true
+    }
+
+  ],
+
+  "presets": [
+    {
+      "name": "Main Product"
+    }
+  ]
+}
+{% endschema %}

@@ -1,6 +1,5 @@
 <header class="navigation">
   <div class="navigation-container page-width">
-
     <!-- Mobile Menu Button -->
     <button
       type="button"
@@ -17,19 +16,11 @@
     <!-- Logo -->
     <div class="navigation-logo">
       <a href="{{ routes.root_url }}">
-
         {% if section.settings.logo != blank %}
-          {{
-            section.settings.logo
-            | image_url: width: 300
-            | image_tag:
-              loading: 'eager',
-              alt: shop.name
-          }}
+          {{ section.settings.logo | image_url: width: 300 | image_tag: loading: 'eager', alt: shop.name }}
         {% else %}
           {{ shop.name }}
         {% endif %}
-
       </a>
     </div>
 
@@ -38,44 +29,29 @@
       class="navigation-menu"
       aria-label="Main navigation"
     >
-
       {% if section.settings.menu != blank %}
-
         {% for link in section.settings.menu.links %}
-
           <div class="navigation-item">
-
             <a href="{{ link.url }}">
               {{ link.title }}
             </a>
 
             {% if link.links.size > 0 %}
-
               <div class="navigation-dropdown">
-
                 {% for child_link in link.links %}
-
                   <a href="{{ child_link.url }}">
                     {{ child_link.title }}
                   </a>
-
                 {% endfor %}
-
               </div>
-
             {% endif %}
-
           </div>
-
         {% endfor %}
-
       {% endif %}
-
     </nav>
 
     <!-- Navigation Actions -->
     <div class="navigation-actions">
-
       <a
         href="{{ routes.search_url }}"
         class="navigation-icon"
@@ -87,23 +63,44 @@
       <a
         href="{{ routes.cart_url }}"
         class="navigation-icon"
+        data-cart-drawer-open
         aria-label="Cart"
       >
-        Cart
+        <svg
+          class="header-cart-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path
+            d="M6.5 8.5H17.5L19 21H5L6.5 8.5Z"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linejoin="round"
+          />
 
-        {% if cart.item_count > 0 %}
-          <span class="cart-count">
-            {{ cart.item_count }}
-          </span>
-        {% endif %}
+          <path
+            d="M9 9V6.5C9 4.84 10.34 3.5 12 3.5C13.66 3.5 15 4.84 15 6.5V9"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
 
+        <span
+          class="cart-count"
+          data-cart-count
+          {% if cart.item_count == 0 %}
+            hidden
+          {% endif %}
+        >
+          {{ cart.item_count }}
+        </span>
       </a>
-
     </div>
-
   </div>
 </header>
-
 
 <!-- Mobile Menu -->
 
@@ -112,9 +109,7 @@
   class="mobile-menu"
   aria-hidden="true"
 >
-
   <div class="mobile-menu-header">
-
     <span>Menu</span>
 
     <button
@@ -124,60 +119,39 @@
     >
       ×
     </button>
-
   </div>
-
 
   <nav
     class="mobile-menu-links"
     aria-label="Mobile navigation"
   >
-
     {% if section.settings.menu != blank %}
-
       {% for link in section.settings.menu.links %}
-
         <div class="mobile-menu-item">
-
           <a href="{{ link.url }}">
             {{ link.title }}
           </a>
 
-
           {% if link.links.size > 0 %}
-
             <div class="mobile-submenu">
-
               {% for child_link in link.links %}
-
                 <a href="{{ child_link.url }}">
                   {{ child_link.title }}
                 </a>
-
               {% endfor %}
-
             </div>
-
           {% endif %}
-
         </div>
-
       {% endfor %}
-
     {% endif %}
-
   </nav>
-
 </div>
-
 
 <!-- Overlay -->
 
 <div class="mobile-menu-overlay"></div>
 
-
 <style>
-
   /* =========================
      Navigation
   ========================= */
@@ -188,7 +162,6 @@
     border-bottom: 1px solid #e5e5e5;
   }
 
-
   .navigation-container {
     min-height: 80px;
     display: flex;
@@ -197,7 +170,6 @@
     gap: 40px;
   }
 
-
   /* =========================
      Logo
   ========================= */
@@ -205,7 +177,6 @@
   .navigation-logo {
     flex-shrink: 0;
   }
-
 
   .navigation-logo a {
     display: flex;
@@ -216,7 +187,6 @@
     font-weight: 700;
   }
 
-
   .navigation-logo img {
     display: block;
     width: auto;
@@ -224,7 +194,6 @@
     max-height: 50px;
     object-fit: contain;
   }
-
 
   /* =========================
      Desktop Menu
@@ -238,11 +207,9 @@
     flex: 1;
   }
 
-
   .navigation-item {
     position: relative;
   }
-
 
   .navigation-item > a {
     display: block;
@@ -252,11 +219,9 @@
     text-decoration: none;
   }
 
-
   .navigation-item > a:hover {
     text-decoration: underline;
   }
-
 
   /* =========================
      Dropdown
@@ -279,11 +244,9 @@
     display: none;
   }
 
-
   .navigation-item:hover .navigation-dropdown {
     display: block;
   }
-
 
   .navigation-dropdown a {
     display: block;
@@ -294,11 +257,9 @@
     text-decoration: none;
   }
 
-
   .navigation-dropdown a:hover {
     background: #f5f5f5;
   }
-
 
   /* =========================
      Actions
@@ -311,7 +272,6 @@
     flex-shrink: 0;
   }
 
-
   .navigation-icon {
     position: relative;
 
@@ -320,31 +280,29 @@
     text-decoration: none;
   }
 
-
   .navigation-icon:hover {
     text-decoration: underline;
   }
-
 
   .cart-count {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
     min-width: 18px;
     height: 18px;
-
     margin-left: 4px;
     padding: 0 5px;
-
     border-radius: 50%;
-
     background: #111;
     color: #fff;
-
     font-size: 11px;
+    position: absolute;
+    top: -6px;
+    right: -8px;
   }
-
+  .navigation-icon svg {
+    width: 22px;
+  }
 
   /* =========================
      Mobile Menu Button
@@ -369,7 +327,6 @@
     cursor: pointer;
   }
 
-
   .mobile-menu-button span {
     display: block;
 
@@ -378,7 +335,6 @@
 
     background: #111;
   }
-
 
   /* =========================
      Mobile Menu
@@ -404,11 +360,9 @@
     overflow-y: auto;
   }
 
-
   .mobile-menu.active {
     left: 0;
   }
-
 
   /* =========================
      Mobile Menu Header
@@ -427,7 +381,6 @@
     font-weight: 600;
   }
 
-
   .mobile-menu-close {
     border: 0;
     background: transparent;
@@ -438,7 +391,6 @@
     cursor: pointer;
   }
 
-
   /* =========================
      Mobile Menu Links
   ========================= */
@@ -447,11 +399,9 @@
     padding: 10px 20px 30px;
   }
 
-
   .mobile-menu-item {
     border-bottom: 1px solid #eee;
   }
-
 
   .mobile-menu-item > a {
     display: block;
@@ -464,11 +414,9 @@
     text-decoration: none;
   }
 
-
   .mobile-menu-item > a:hover {
     text-decoration: underline;
   }
-
 
   /* =========================
      Mobile Submenu
@@ -477,7 +425,6 @@
   .mobile-submenu {
     padding: 0 0 10px 15px;
   }
-
 
   .mobile-submenu a {
     display: block;
@@ -490,11 +437,9 @@
     text-decoration: none;
   }
 
-
   .mobile-submenu a:hover {
     color: #111;
   }
-
 
   /* =========================
      Overlay
@@ -512,95 +457,74 @@
     background: rgba(0, 0, 0, 0.4);
   }
 
-
   .mobile-menu-overlay.active {
     display: block;
   }
-
 
   /* =========================
      Tablet / Mobile
   ========================= */
 
   @media screen and (max-width: 989px) {
-
     .navigation-container {
       min-height: 70px;
       gap: 20px;
     }
-
 
     .mobile-menu-button {
       display: flex;
       flex-shrink: 0;
     }
 
-
     .navigation-menu {
       display: none;
     }
-
 
     .navigation-actions {
       margin-left: auto;
       gap: 15px;
     }
-
   }
-
 
   /* =========================
      Mobile
   ========================= */
 
   @media screen and (max-width: 749px) {
-
     .navigation-container {
       padding: 0 20px;
     }
-
 
     .navigation-logo a {
       font-size: 19px;
     }
 
-
     .navigation-logo img {
       max-width: 120px;
     }
-
 
     .navigation-actions {
       gap: 12px;
     }
 
-
     .navigation-icon {
       font-size: 13px;
     }
-
   }
-
 </style>
 
-
 <script>
-
   document.addEventListener('DOMContentLoaded', function () {
-
     const menuButton = document.querySelector('.mobile-menu-button');
     const menu = document.querySelector('.mobile-menu');
     const closeButton = document.querySelector('.mobile-menu-close');
     const overlay = document.querySelector('.mobile-menu-overlay');
 
-
     if (!menuButton || !menu || !closeButton || !overlay) {
       return;
     }
 
-
     function openMenu() {
-
       menu.classList.add('active');
       overlay.classList.add('active');
 
@@ -609,12 +533,9 @@
       menuButton.setAttribute('aria-expanded', 'true');
 
       document.body.style.overflow = 'hidden';
-
     }
 
-
     function closeMenu() {
-
       menu.classList.remove('active');
       overlay.classList.remove('active');
 
@@ -623,43 +544,29 @@
       menuButton.setAttribute('aria-expanded', 'false');
 
       document.body.style.overflow = '';
-
     }
-
 
     menuButton.addEventListener('click', openMenu);
 
-
     closeButton.addEventListener('click', closeMenu);
-
 
     overlay.addEventListener('click', closeMenu);
 
-
     document.addEventListener('keydown', function (event) {
-
       if (event.key === 'Escape') {
         closeMenu();
       }
-
     });
-
 
     const mobileLinks = menu.querySelectorAll('a');
 
     mobileLinks.forEach(function (link) {
-
       link.addEventListener('click', closeMenu);
-
     });
-
   });
-
 </script>
 
-
 {% schema %}
-
 {
   "name": "Navigation",
 
@@ -683,5 +590,4 @@
     }
   ]
 }
-
 {% endschema %}

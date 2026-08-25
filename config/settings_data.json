@@ -13,7 +13,7 @@
     "page_padding": 16,
     "page_padding_desktop": 20,
     "body_font": "inter_n4",
-    "heading_font": "poppins_n7",
+    "heading_font": "open_sans_n4",
     "content_for_index": []
   },
   "presets": {

@@ -1,0 +1,713 @@
+{% comment %}
+  Cart Drawer
+{% endcomment %}
+
+<div
+  class="cart-drawer-overlay"
+  data-cart-drawer-overlay
+></div>
+
+<aside
+  class="cart-drawer"
+  data-cart-drawer
+  aria-label="Shopping cart"
+  aria-hidden="true"
+>
+
+  <div class="cart-drawer-header">
+
+    <h2 class="cart-drawer-title">
+      Your Cart
+    </h2>
+
+    <button
+      type="button"
+      class="cart-drawer-close"
+      data-cart-drawer-close
+      aria-label="Close cart"
+    >
+      ×
+    </button>
+
+  </div>
+
+
+  <div
+    class="cart-drawer-content"
+    data-cart-drawer-content
+  >
+
+    {% if cart.item_count > 0 %}
+
+      <div class="cart-drawer-items">
+
+        {% for item in cart.items %}
+
+          <article
+            class="cart-drawer-item"
+            data-cart-line="{{ forloop.index }}"
+          >
+
+            <div class="cart-drawer-item-image">
+
+              {% if item.image != blank %}
+
+                <img
+                  src="{{ item.image | image_url: width: 180 }}"
+                  alt="{{ item.image.alt | escape }}"
+                  width="90"
+                  height="90"
+                  loading="lazy"
+                >
+
+              {% endif %}
+
+            </div>
+
+
+            <div class="cart-drawer-item-info">
+
+              <a
+                href="{{ item.url }}"
+                class="cart-drawer-item-title"
+              >
+                {{ item.product.title }}
+              </a>
+
+
+              {% unless item.product.has_only_default_variant %}
+
+                <div class="cart-drawer-item-variant">
+
+                  {% for option in item.options_with_values %}
+
+                    <span>
+                      {{ option.name }}:
+                      {{ option.value }}
+                    </span>
+
+                  {% endfor %}
+
+                </div>
+
+              {% endunless %}
+
+
+              <div class="cart-drawer-item-price">
+
+                {{ item.final_line_price | money }}
+
+              </div>
+
+
+              <div class="cart-drawer-item-actions">
+
+                <div class="cart-drawer-quantity">
+
+                  <button
+                    type="button"
+                    data-cart-drawer-minus
+                    data-line="{{ forloop.index }}"
+                    aria-label="Decrease quantity"
+                  >
+                    −
+                  </button>
+
+                  <span data-cart-drawer-quantity>
+                    {{ item.quantity }}
+                  </span>
+
+                  <button
+                    type="button"
+                    data-cart-drawer-plus
+                    data-line="{{ forloop.index }}"
+                    aria-label="Increase quantity"
+                  >
+                    +
+                  </button>
+
+                </div>
+
+
+                <button
+                  type="button"
+                  class="cart-drawer-remove"
+                  data-cart-drawer-remove
+                  data-line="{{ forloop.index }}"
+                >
+                  Remove
+                </button>
+
+              </div>
+
+            </div>
+
+          </article>
+
+        {% endfor %}
+
+      </div>
+
+
+      <div class="cart-drawer-footer">
+
+        <div class="cart-drawer-subtotal">
+
+          <span>
+            Subtotal
+          </span>
+
+          <strong data-cart-drawer-subtotal>
+            {{ cart.total_price | money }}
+          </strong>
+
+        </div>
+
+
+        <p class="cart-drawer-note">
+          Taxes and shipping calculated at checkout.
+        </p>
+
+        <form
+          action="{{ routes.cart_url }}"
+          method="post"
+        >
+
+          <button
+            type="submit"
+            name="checkout"
+            class="cart-drawer-checkout-button"
+          >
+            Checkout
+          </button>
+
+        </form>
+
+
+        <button
+          type="button"
+          class="cart-drawer-continue"
+          data-cart-drawer-close
+        >
+          Continue Shopping
+        </button>
+
+      </div>
+
+
+    {% else %}
+
+      <div class="cart-drawer-empty">
+
+        <div class="cart-drawer-empty-icon">
+          🛒
+        </div>
+
+        <h3>
+          Your cart is empty
+        </h3>
+
+        <p>
+          Add some products to your cart and they will appear here.
+        </p>
+
+        <button
+          type="button"
+          class="cart-drawer-empty-button"
+          data-cart-drawer-close
+        >
+          Continue Shopping
+        </button>
+
+      </div>
+
+    {% endif %}
+
+  </div>
+
+</aside>
+
+
+<style>
+
+/* ========================================
+   OVERLAY
+======================================== */
+
+.cart-drawer-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 998;
+
+  background: rgba(0, 0, 0, 0.45);
+
+  opacity: 0;
+
+  visibility: hidden;
+
+  transition:
+    opacity 0.25s ease,
+    visibility 0.25s ease;
+}
+
+.cart-drawer-overlay.is-active {
+  opacity: 1;
+
+  visibility: visible;
+}
+
+
+/* ========================================
+   DRAWER
+======================================== */
+
+.cart-drawer {
+  position: fixed;
+
+  top: 0;
+  right: 0;
+  bottom: 0;
+
+  z-index: 999;
+
+  display: flex;
+
+  flex-direction: column;
+
+  width: 430px;
+
+  max-width: 100%;
+
+  background: #fff;
+
+  box-shadow:
+    -8px 0 30px rgba(0, 0, 0, 0.12);
+
+  transform: translateX(100%);
+
+  transition:
+    transform 0.3s ease;
+
+  visibility: hidden;
+}
+
+.cart-drawer.is-active {
+  transform: translateX(0);
+
+  visibility: visible;
+}
+
+
+/* ========================================
+   HEADER
+======================================== */
+
+.cart-drawer-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 20px;
+
+  border-bottom: 1px solid #ddd;
+}
+
+.cart-drawer-title {
+  margin: 0;
+
+  font-size: 20px;
+}
+
+.cart-drawer-close {
+  width: 38px;
+
+  height: 38px;
+
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #111;
+
+  font-size: 30px;
+
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.cart-drawer-close:hover {
+  background: #f5f5f5;
+}
+
+
+/* ========================================
+   CONTENT
+======================================== */
+
+.cart-drawer-content {
+  display: flex;
+
+  flex: 1;
+
+  flex-direction: column;
+
+  min-height: 0;
+}
+
+
+/* ========================================
+   ITEMS
+======================================== */
+
+.cart-drawer-items {
+  flex: 1;
+
+  overflow-y: auto;
+
+  padding: 0 20px;
+}
+
+.cart-drawer-item {
+  display: grid;
+
+  grid-template-columns: 90px minmax(0, 1fr);
+
+  gap: 15px;
+
+  padding: 20px 0;
+
+  border-bottom: 1px solid #eee;
+}
+
+.cart-drawer-item-image {
+  overflow: hidden;
+
+  width: 90px;
+
+  height: 90px;
+
+  background: #f5f5f5;
+}
+
+.cart-drawer-item-image img {
+  display: block;
+
+  width: 100%;
+
+  height: 100%;
+
+  object-fit: cover;
+}
+
+
+/* ========================================
+   ITEM INFO
+======================================== */
+
+.cart-drawer-item-info {
+  min-width: 0;
+}
+
+.cart-drawer-item-title {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #111;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  line-height: 1.4;
+
+  text-decoration: none;
+}
+
+.cart-drawer-item-title:hover {
+  text-decoration: underline;
+}
+
+.cart-drawer-item-variant {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 2px;
+
+  margin-bottom: 7px;
+
+  color: #777;
+
+  font-size: 12px;
+}
+
+.cart-drawer-item-price {
+  margin-bottom: 10px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+
+/* ========================================
+   ITEM ACTIONS
+======================================== */
+
+.cart-drawer-item-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+}
+
+.cart-drawer-quantity {
+  display: flex;
+
+  align-items: center;
+
+  border: 1px solid #ccc;
+}
+
+.cart-drawer-quantity button {
+  width: 28px;
+
+  height: 30px;
+
+  padding: 0;
+
+  border: 0;
+
+  background: #fff;
+
+  cursor: pointer;
+
+  font-size: 16px;
+}
+
+.cart-drawer-quantity button:hover {
+  background: #f5f5f5;
+}
+
+.cart-drawer-quantity span {
+  min-width: 30px;
+
+  text-align: center;
+
+  font-size: 13px;
+}
+
+.cart-drawer-remove {
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #777;
+
+  font-size: 12px;
+
+  text-decoration: underline;
+
+  cursor: pointer;
+}
+
+.cart-drawer-remove:hover {
+  color: #111;
+}
+
+
+/* ========================================
+   FOOTER
+======================================== */
+
+.cart-drawer-footer {
+  flex-shrink: 0;
+
+  padding: 20px;
+
+  border-top: 1px solid #ddd;
+
+  background: #fff;
+}
+
+.cart-drawer-subtotal {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 8px;
+
+  font-size: 16px;
+}
+
+.cart-drawer-subtotal strong {
+  font-size: 18px;
+}
+
+.cart-drawer-note {
+  margin: 0 0 15px;
+
+  color: #777;
+
+  font-size: 12px;
+
+  line-height: 1.5;
+}
+
+
+/* ========================================
+   FOOTER BUTTONS
+======================================== */
+
+.cart-drawer-cart-button,
+.cart-drawer-checkout-button {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  min-height: 46px;
+
+  box-sizing: border-box;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  text-decoration: none;
+
+  cursor: pointer;
+}
+
+.cart-drawer-cart-button {
+  margin-bottom: 10px;
+
+  border: 1px solid #111;
+
+  background: #fff;
+
+  color: #111;
+}
+
+.cart-drawer-cart-button:hover {
+  background: #f5f5f5;
+}
+
+.cart-drawer-checkout-button {
+  border: 1px solid #111;
+
+  background: #111;
+
+  color: #fff;
+}
+
+.cart-drawer-checkout-button:hover {
+  background: #333;
+}
+
+.cart-drawer-continue {
+  display: block;
+
+  width: 100%;
+
+  margin-top: 12px;
+
+  padding: 5px;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #111;
+
+  font-size: 13px;
+
+  text-decoration: underline;
+
+  cursor: pointer;
+}
+
+
+/* ========================================
+   EMPTY
+======================================== */
+
+.cart-drawer-empty {
+  display: flex;
+
+  flex: 1;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+
+  padding: 30px;
+
+  text-align: center;
+}
+
+.cart-drawer-empty-icon {
+  margin-bottom: 15px;
+
+  font-size: 40px;
+}
+
+.cart-drawer-empty h3 {
+  margin: 0 0 8px;
+
+  font-size: 20px;
+}
+
+.cart-drawer-empty p {
+  max-width: 280px;
+
+  margin: 0 0 20px;
+
+  color: #666;
+
+  font-size: 13px;
+
+  line-height: 1.6;
+}
+
+.cart-drawer-empty-button {
+  padding: 12px 20px;
+
+  border: 1px solid #111;
+
+  background: #111;
+
+  color: #fff;
+
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media screen and (max-width: 749px) {
+
+  .cart-drawer {
+    width: 100%;
+  }
+
+}
+</style>

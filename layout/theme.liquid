@@ -5,16 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopify Store</title>
     {% render 'theme-variables' %}
-    {{ "base.css" | asset_url | stylesheet_tag }}
+    {{ 'base.css' | asset_url | stylesheet_tag }}
     {{ content_for_header }}
   </head>
   <body>
     <header>
       {% sections 'header-group' %}
     </header>
-    <main>{{ content_for_layout }}</main>
+    <main>
+      {{ content_for_layout }}
+      {% section 'cart-drawer' %}
+    </main>
     <footer>
       {% sections 'footer-group' %}
     </footer>
+    <script>
+      window.ShopifyRoutes = {
+        cart: '{{ routes.cart_url }}',
+        cartAdd: '{{ routes.cart_add_url }}',
+        cartChange: '{{ routes.cart_change_url }}',
+      };
+    </script>
+
+    <script
+      src="{{ 'cart-drawer.js' | asset_url }}"
+      defer
+    ></script>
   </body>
 </html>
